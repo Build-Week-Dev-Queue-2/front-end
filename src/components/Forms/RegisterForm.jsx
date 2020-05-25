@@ -1,4 +1,5 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import {
   TextField,
@@ -8,9 +9,13 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
+import { axiosWithAuth } from "../../utils/axiosWithAuth";
+import { userRegister } from "../../actions/userActions";
+
 import Form from "./Form";
 
 export default function RegisterForm(props) {
+  const dispatch = useDispatch();
   const {
     register,
     control,
@@ -19,8 +24,14 @@ export default function RegisterForm(props) {
     errors,
   } = useForm();
   const onSubmit = (data) => {
-    console.log(data);
-    props.history.push("/login");
+    axiosWithAuth()
+      .post("/auth/register", data)
+      .then((res) => {
+        console.log(res.data);
+        dispatch(userRegister(res.data));
+        props.history.push("/home");
+      })
+      .catch((err) => console.log(err));
   };
 
   return (

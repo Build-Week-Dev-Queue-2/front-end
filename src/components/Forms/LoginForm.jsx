@@ -1,12 +1,26 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { TextField, Button, FormGroup } from "@material-ui/core";
+
+import { axiosWithAuth } from "../../utils/axiosWithAuth";
+import { userLogin } from "../../actions/userActions";
 
 import Form from "./Form";
 
 export default function LoginForm(props) {
+  const dispatch = useDispatch();
   const { register, handleSubmit, errors, triggerValidation } = useForm();
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    axiosWithAuth()
+      .post("/auth/login", data)
+      .then((res) => {
+        console.log(res.data);
+        dispatch(userLogin(res.data.token));
+        props.history.push("/home");
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <Form title="Login" handleSubmit={handleSubmit(onSubmit)}>
