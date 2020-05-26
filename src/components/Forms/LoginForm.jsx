@@ -15,7 +15,7 @@ export default function LoginForm(props) {
     axiosWithAuth()
       .post("/auth/login", data)
       .then((res) => {
-        dispatch(userLogin(res.data.token));
+        dispatch(userLogin(res.data));
         props.history.push("/home");
       })
       .catch((err) => console.log(err));
