@@ -5,7 +5,6 @@ export const axiosWithAuth = (token = "") => {
     headers: {
       Authorization: token,
     },
-    baseURL:
-      "https://cors-anywhere.herokuapp.com/https://devdeskqueue2backend.herokuapp.com",
+    baseURL: "https://devdeskqueue2backend.herokuapp.com",
   });
 };

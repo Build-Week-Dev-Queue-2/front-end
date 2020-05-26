@@ -27,7 +27,6 @@ export default function RegisterForm(props) {
     axiosWithAuth()
       .post("/auth/register", data)
       .then((res) => {
-        console.log(res.data);
         dispatch(userRegister(res.data));
         props.history.push("/home");
       })
