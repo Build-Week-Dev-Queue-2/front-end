@@ -2,7 +2,9 @@ import { USER_LOGIN, USER_REGISTER } from "../actions/userActions";
 
 const initialState = {
   user: {
+    user_id: "",
     username: "",
+    role: "",
     role_id: "",
   },
   token: "",
