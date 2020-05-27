@@ -24,7 +24,6 @@ export default function CreateTicketForm(props) {
     const ticket = {
       ...data,
       author: user.user_id,
-      category_id: 1,
     };
     axiosWithAuth(token)
       .post("/api/tickets", ticket)

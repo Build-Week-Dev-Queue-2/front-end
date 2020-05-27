@@ -5,6 +5,6 @@ export const axiosWithAuth = (token = "") => {
     headers: {
       Authorization: token,
     },
-    baseURL: "https://devdeskqueue2backend.herokuapp.com",
+    baseURL: "https://devdesk2lambda.herokuapp.com/",
   });
 };
