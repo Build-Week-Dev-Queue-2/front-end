@@ -12,12 +12,12 @@ import "./Home.scss";
 export default function Home() {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const [tab, setTab] = useState("Open");
   const token = useSelector((state) => state.user.token);
-  const tickets = useSelector((state) => {
-    return state.user.tickets.sort((a, b) => {
-      return b.posted_time - a.posted_time;
-    });
-  });
+  const openTickets = useSelector((state) => state.user.openTickets);
+  const resolvedTickets = useSelector((state) => state.user.resolvedTickets);
+  const [tickets, setTickets] = useState(openTickets);
+
   useEffect(() => {
     axiosWithAuth(token)
       .get("/api/tickets")
@@ -26,12 +26,36 @@ export default function Home() {
       });
   }, [token, dispatch]);
 
+  useEffect(() => {
+    const sortedTickets = (array) =>
+      array.sort((a, b) => {
+        return b.posted_time - a.posted_time;
+      });
+    if (tab === "Open") {
+      setTickets(sortedTickets(openTickets));
+    } else if (tab === "Resolved") {
+      setTickets(sortedTickets(resolvedTickets));
+    }
+  }, [tab, openTickets, resolvedTickets, tickets]);
+
   return (
     <div className="home-wrapper">
       <header>
-        <ButtonGroup variant="text" color="primary">
-          <Button>Open</Button>
-          <Button>Resolved</Button>
+        <ButtonGroup
+          onClick={(evt) => setTab(evt.target.textContent)}
+          variant="text"
+          color="primary"
+        >
+          <Button
+            style={{ backgroundColor: tab === "Open" && "rgba(0,0,0,0.1)" }}
+          >
+            Open
+          </Button>
+          <Button
+            style={{ backgroundColor: tab === "Resolved" && "rgba(0,0,0,0.1)" }}
+          >
+            Resolved
+          </Button>
         </ButtonGroup>
       </header>
       <main>
@@ -45,18 +69,4 @@ export default function Home() {
       </footer>
     </div>
   );
-
-  // return (
-  //   <>
-  //     <TicketList tickets={tickets} />
-  //     <CreateTicketForm isOpen={isOpen} setIsOpen={setIsOpen} />
-  //     <Fab
-  //       onClick={() => setIsOpen(!isOpen)}
-  //       color="primary"
-  //       style={{ zIndex: 2 }}
-  //     >
-  //       <AddIcon />
-  //     </Fab>
-  //   </>
-  // );
 }
