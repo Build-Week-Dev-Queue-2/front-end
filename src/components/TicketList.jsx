@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 
+import Ticket from "./Ticket";
+
 export default function TicketList() {
   const tickets = useSelector((state) => {
     const sortedTickets = state.user.tickets.sort((a, b) => {
@@ -16,14 +18,7 @@ export default function TicketList() {
   return (
     <>
       {tickets.map((ticket) => {
-        return (
-          <div key={ticket.ticked_id}>
-            <h2>{ticket.title}</h2>
-            <p>{ticket.content}</p>
-            <span>{ticket.author}</span>
-            <span>{ticket.category}</span>
-          </div>
-        );
+        return <Ticket ticket={ticket} />;
       })}
     </>
   );
