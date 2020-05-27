@@ -14,6 +14,7 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(false);
   const [tab, setTab] = useState("Open");
   const token = useSelector((state) => state.user.token);
+  const user = useSelector((state) => state.user.user);
   const openTickets = useSelector((state) => state.user.openTickets);
   const resolvedTickets = useSelector((state) => state.user.resolvedTickets);
   const [tickets, setTickets] = useState(openTickets);
@@ -22,9 +23,13 @@ export default function Home() {
     axiosWithAuth(token)
       .get("/api/tickets")
       .then((res) => {
-        dispatch(fetchAllTickets(res.data));
+        const data =
+          user.role_id === 1
+            ? res.data.filter((ticket) => ticket.author === user.username)
+            : res.data;
+        dispatch(fetchAllTickets(data));
       });
-  }, [token, dispatch]);
+  }, [token, dispatch, user]);
 
   useEffect(() => {
     const sortedTickets = (array) =>
