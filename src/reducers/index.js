@@ -5,11 +5,13 @@ import {
   FETCH_ALL_TICKETS,
   CREATE_COMMENT,
   FETCH_COMMENTS,
+  MARK_RESOLVED,
 } from "../actions/";
 
+const savedUser = JSON.parse(sessionStorage.getItem("user"));
 const initialState = {
-  user: {
-    user_id: "",
+  user: savedUser || {
+    user_id: null,
     username: "",
     role: "",
     role_id: "",
@@ -22,17 +24,20 @@ export const reducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_LOGIN:
       sessionStorage.setItem("token", action.payload.token);
+      sessionStorage.setItem("user", JSON.stringify(action.payload.user));
       return {
         ...state,
         user: action.payload.user,
       };
     case USER_REGISTER:
       sessionStorage.setItem("token", action.payload.token);
+      sessionStorage.setItem("user", JSON.stringify(action.payload.user));
       return {
         ...state,
         user: action.payload.user,
       };
     case FETCH_ALL_TICKETS:
+      console.log({ session: savedUser, initialState });
       return {
         ...state,
         tickets: action.payload,
@@ -61,7 +66,16 @@ export const reducer = (state = initialState, action) => {
     case CREATE_TICKET:
       return {
         ...state,
-        openTickets: [...state.openTickets, action.payload],
+        tickets: [...state.tickets, action.payload],
+      };
+    case MARK_RESOLVED:
+      return {
+        ...state,
+        tickets: state.tickets.map((ticket) => {
+          return ticket.ticket_id === action.payload.ticket_id
+            ? action.payload
+            : ticket;
+        }),
       };
     default:
       return state;

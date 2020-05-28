@@ -27,7 +27,7 @@ export default function RegisterForm(props) {
       .post("/auth/register", data)
       .then((res) => {
         dispatch(userRegister(res.data));
-        props.history.push("/home");
+        props.history.push("/home/unresolved");
       })
       .catch((err) => console.log(err));
   };
