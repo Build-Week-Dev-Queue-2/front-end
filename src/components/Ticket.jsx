@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CardContent,
@@ -17,6 +17,7 @@ export default function Ticket({ ticket }) {
   const comments = useSelector((state) => state.comments[ticket.ticket_id]);
   const user = useSelector((state) => state.user);
   const [message, setMessage] = useState("");
+  const [isResolved, setIsResolved] = useState(false);
 
   const submitComment = (evt) => {
     evt.preventDefault();
@@ -38,8 +39,10 @@ export default function Ticket({ ticket }) {
   const submitMarkResolved = (evt) => {
     evt.stopPropagation();
 
+    setIsResolved(!isResolved);
+
     const resolvedTicket = {
-      resolved: "true",
+      resolved: isResolved ? "true" : "false",
       resolved_by: user.user_id,
       resolved_time: Date.now(),
     };
@@ -76,14 +79,16 @@ export default function Ticket({ ticket }) {
           <Typography variant="h5" component="h3">
             {ticket.category}
           </Typography>
-          {ticket.resolved === "false" && user.role_id === 2 && (
+          {user.role_id === 2 && (
             <Button
               variant="contained"
               color="secondary"
               disableElevation
               onClick={submitMarkResolved}
             >
-              Mark Resolved
+              {ticket.resolved === "false"
+                ? "Mark Resolved"
+                : "Unmark Resolved"}
             </Button>
           )}
         </CardContent>
