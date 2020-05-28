@@ -15,9 +15,13 @@ export default function Home() {
   const [tab, setTab] = useState("Open");
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
-  const openTickets = useSelector((state) => state.openTickets);
-  const resolvedTickets = useSelector((state) => state.resolvedTickets);
-  const [tickets, setTickets] = useState(openTickets);
+
+  const openTickets = useSelector((state) => {
+    return state.tickets.filter((ticket) => ticket.resolved === "false");
+  });
+  const resolvedTickets = useSelector((state) => {
+    return state.tickets.filter((ticket) => ticket.resolved === "true");
+  });
 
   useEffect(() => {
     axiosWithAuth(token)
@@ -30,18 +34,6 @@ export default function Home() {
         dispatch(fetchAllTickets(data));
       });
   }, [token, dispatch, user]);
-
-  useEffect(() => {
-    const sortedTickets = (array) =>
-      array.sort((a, b) => {
-        return b.posted_time - a.posted_time;
-      });
-    if (tab === "Open") {
-      setTickets(sortedTickets(openTickets));
-    } else if (tab === "Resolved") {
-      setTickets(sortedTickets(resolvedTickets));
-    }
-  }, [tab, openTickets, resolvedTickets, tickets]);
 
   return (
     <div className="home-wrapper">
@@ -64,7 +56,12 @@ export default function Home() {
         </ButtonGroup>
       </header>
       <main>
-        <TicketList tickets={tickets} />
+        <TicketList
+          tickets={
+            (tab === "Open" && openTickets) ||
+            (tab === "Resolved" && resolvedTickets)
+          }
+        />
         <CreateTicketForm isOpen={isOpen} setIsOpen={setIsOpen} />
       </main>
       <footer>

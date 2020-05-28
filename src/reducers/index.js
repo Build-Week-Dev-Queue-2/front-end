@@ -15,8 +15,7 @@ const initialState = {
     role_id: "",
   },
   comments: {},
-  openTickets: [],
-  resolvedTickets: [],
+  tickets: [],
   token: "",
 };
 
@@ -35,16 +34,9 @@ export const reducer = (state = initialState, action) => {
         token: action.payload.token,
       };
     case FETCH_ALL_TICKETS:
-      const openTickets = action.payload.filter((ticket) => {
-        return ticket.resolved === "false";
-      });
-      const resolvedTickets = action.payload.filter((ticket) => {
-        return ticket.resolved === "true";
-      });
       return {
         ...state,
-        openTickets,
-        resolvedTickets,
+        tickets: action.payload,
       };
     case FETCH_COMMENTS:
       const comments = action.payload.reduce((obj, comment) => {
