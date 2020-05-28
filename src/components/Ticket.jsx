@@ -7,21 +7,22 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   TextField,
+  Button,
 } from "@material-ui/core";
-import { ExpandMore } from "@material-ui/icons";
-import { createComment } from "../actions/";
+import { createComment, markResolved } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function Ticket({ ticket }) {
   const dispatch = useDispatch();
   const comments = useSelector((state) => state.comments[ticket.ticket_id]);
-  const userId = useSelector((state) => state.user.user_id);
+  const user = useSelector((state) => state.user);
   const [message, setMessage] = useState("");
+  const [isResolved, setIsResolved] = useState(false);
 
   const submitComment = (evt) => {
     evt.preventDefault();
     const comment = {
-      author: userId,
+      author: user.user_id,
       message: message,
       ticket_id: ticket.ticket_id,
     };
@@ -35,9 +36,31 @@ export default function Ticket({ ticket }) {
       .catch((err) => console.log(err));
   };
 
+  const submitMarkResolved = (evt) => {
+    evt.stopPropagation();
+
+    setIsResolved(!isResolved);
+
+    const resolvedTicket = {
+      resolved: isResolved ? "true" : "false",
+      resolved_by: user.user_id,
+      resolved_time: Date.now(),
+    };
+
+    console.log({ resolvedTicket });
+
+    axiosWithAuth()
+      .put(`/api/tickets/${ticket.ticket_id}`, resolvedTicket)
+      .then((res) => {
+        console.log(res.data);
+        dispatch(markResolved(res.data));
+      })
+      .catch((err) => console.log(err.response.data.message));
+  };
+
   return (
     <ExpansionPanel style={{ overflowX: "hidden" }}>
-      <ExpansionPanelSummary expandIcon={<ExpandMore />}>
+      <ExpansionPanelSummary>
         <CardContent>
           <Typography
             variant="h2"
@@ -56,6 +79,18 @@ export default function Ticket({ ticket }) {
           <Typography variant="h5" component="h3">
             {ticket.category}
           </Typography>
+          {user.role_id === 2 && (
+            <Button
+              variant="contained"
+              color="secondary"
+              disableElevation
+              onClick={submitMarkResolved}
+            >
+              {ticket.resolved === "false"
+                ? "Mark Resolved"
+                : "Unmark Resolved"}
+            </Button>
+          )}
         </CardContent>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails
