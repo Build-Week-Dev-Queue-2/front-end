@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { TextField, Button, FormGroup } from "@material-ui/core";
 
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
-import { userLogin } from "../../actions/userActions";
+import { userLogin } from "../../actions/";
 
 import Form from "./Form";
 

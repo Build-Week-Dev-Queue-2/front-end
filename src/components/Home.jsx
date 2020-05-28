@@ -4,7 +4,7 @@ import { ButtonGroup, Button, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import { axiosWithAuth } from "../utils/axiosWithAuth";
-import { fetchAllTickets } from "../actions/userActions";
+import { fetchAllTickets } from "../actions/";
 import CreateTicketForm from "./Forms/CreateTicketForm";
 import TicketList from "./TicketList";
 import "./Home.scss";
@@ -13,10 +13,10 @@ export default function Home() {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [tab, setTab] = useState("Open");
-  const token = useSelector((state) => state.user.token);
-  const user = useSelector((state) => state.user.user);
-  const openTickets = useSelector((state) => state.user.openTickets);
-  const resolvedTickets = useSelector((state) => state.user.resolvedTickets);
+  const token = useSelector((state) => state.token);
+  const user = useSelector((state) => state.user);
+  const openTickets = useSelector((state) => state.openTickets);
+  const resolvedTickets = useSelector((state) => state.resolvedTickets);
   const [tickets, setTickets] = useState(openTickets);
 
   useEffect(() => {

@@ -10,15 +10,15 @@ import {
 } from "@material-ui/core";
 
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
-import { createTicket } from "../../actions/userActions";
+import { createTicket } from "../../actions";
 
 import Form from "./Form";
 
 export default function CreateTicketForm(props) {
   const dispatch = useDispatch();
   const { register, control, handleSubmit } = useForm();
-  const user = useSelector((state) => state.user.user);
-  const token = useSelector((state) => state.user.token);
+  const user = useSelector((state) => state.user);
+  const token = useSelector((state) => state.token);
 
   const onSubmit = (data) => {
     const ticket = {

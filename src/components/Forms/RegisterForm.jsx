@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
-import { userRegister } from "../../actions/userActions";
+import { userRegister } from "../../actions/";
 
 import Form from "./Form";
 

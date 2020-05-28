@@ -4,7 +4,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
 import { logger } from "redux-logger";
-import reducer from "./reducers/";
+import { reducer } from "./reducers/";
 import App from "./App";
 import "./index.css";
 

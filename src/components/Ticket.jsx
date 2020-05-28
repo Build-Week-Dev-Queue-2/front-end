@@ -9,16 +9,14 @@ import {
   TextField,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
-import { createComment } from "../actions/userActions";
+import { createComment } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function Ticket({ ticket }) {
   const dispatch = useDispatch();
-  const comments = useSelector(
-    (state) => state.user.comments[ticket.ticket_id]
-  );
-  const token = useSelector((state) => state.user.token);
-  const userId = useSelector((state) => state.user.user.user_id);
+  const comments = useSelector((state) => state.comments[ticket.ticket_id]);
+  const token = useSelector((state) => state.token);
+  const userId = useSelector((state) => state.user.user_id);
   const [message, setMessage] = useState("");
 
   const submitComment = (evt) => {

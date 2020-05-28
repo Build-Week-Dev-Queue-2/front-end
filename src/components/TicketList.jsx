@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { fetchComments } from "../actions/userActions";
+import { fetchComments } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 import Ticket from "./Ticket";
 
 export default function TicketList({ tickets }) {
-  const token = useSelector((state) => state.user.token);
+  const token = useSelector((state) => state.token);
   const dispatch = useDispatch();
 
   useEffect(() => {
