@@ -3,6 +3,7 @@ import {
   USER_REGISTER,
   CREATE_TICKET,
   FETCH_ALL_TICKETS,
+  CREATE_COMMENT,
   FETCH_COMMENTS,
 } from "../actions/userActions";
 
@@ -55,6 +56,16 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         comments,
+      };
+    case CREATE_COMMENT:
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [action.payload.ticket_id]: state.comments[action.payload.ticket_id]
+            ? [...state.comments[action.payload.ticket_id], action.payload]
+            : [action.payload],
+        },
       };
     case CREATE_TICKET:
       return {

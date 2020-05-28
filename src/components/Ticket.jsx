@@ -1,5 +1,5 @@
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   CardContent,
   Typography,
@@ -9,11 +9,34 @@ import {
   TextField,
 } from "@material-ui/core";
 import { ExpandMore } from "@material-ui/icons";
+import { createComment } from "../actions/userActions";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function Ticket({ ticket }) {
+  const dispatch = useDispatch();
   const comments = useSelector(
     (state) => state.user.comments[ticket.ticket_id]
   );
+  const token = useSelector((state) => state.user.token);
+  const userId = useSelector((state) => state.user.user.user_id);
+  const [message, setMessage] = useState("");
+
+  const submitComment = (evt) => {
+    evt.preventDefault();
+    const comment = {
+      author: userId,
+      message: message,
+      ticket_id: ticket.ticket_id,
+    };
+
+    axiosWithAuth(token)
+      .post("/api/comments", comment)
+      .then((res) => {
+        console.log(res.data);
+        dispatch(createComment(res.data));
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <ExpansionPanel style={{ overflowX: "hidden" }}>
@@ -47,12 +70,13 @@ export default function Ticket({ ticket }) {
               <Typography>{`${comment.author}: ${comment.message}`}</Typography>
             );
           })}
-        <form>
+        <form onSubmit={submitComment}>
           <TextField
             name="message"
             label="Message"
             variant="outlined"
             style={{ width: "100%" }}
+            onChange={(evt) => setMessage(evt.target.value)}
           />
         </form>
       </ExpansionPanelDetails>
