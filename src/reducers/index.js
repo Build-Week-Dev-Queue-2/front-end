@@ -5,11 +5,12 @@ import {
   FETCH_ALL_TICKETS,
   CREATE_COMMENT,
   FETCH_COMMENTS,
+  MARK_RESOLVED,
 } from "../actions/";
 
 const initialState = {
   user: {
-    user_id: "",
+    user_id: null,
     username: "",
     role: "",
     role_id: "",
@@ -61,7 +62,16 @@ export const reducer = (state = initialState, action) => {
     case CREATE_TICKET:
       return {
         ...state,
-        openTickets: [...state.openTickets, action.payload],
+        tickets: [...state.tickets, action.payload],
+      };
+    case MARK_RESOLVED:
+      return {
+        ...state,
+        tickets: state.tickets.map((ticket) => {
+          return ticket.ticket_id === action.payload.ticket_id
+            ? action.payload
+            : ticket;
+        }),
       };
     default:
       return state;
