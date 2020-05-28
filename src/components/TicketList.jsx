@@ -1,19 +1,20 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { fetchComments } from "../actions/";
+import { fetchComments } from "../actions/userActions";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 import Ticket from "./Ticket";
 
 export default function TicketList({ tickets }) {
+  const token = useSelector((state) => state.user.token);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    axiosWithAuth()
+    axiosWithAuth(token)
       .get("/api/comments")
       .then((res) => dispatch(fetchComments(res.data)))
       .catch((err) => console.log(err));
-  }, [dispatch]);
+  }, [token, dispatch]);
 
   return (
     <>

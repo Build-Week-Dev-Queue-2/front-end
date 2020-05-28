@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import {
@@ -10,28 +10,36 @@ import {
 } from "@material-ui/core";
 
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
-import { createTicket } from "../../actions";
+import { createTicket } from "../../actions/userActions";
 
-export default function CreateTicketForm() {
+import Form from "./Form";
+
+export default function CreateTicketForm(props) {
   const dispatch = useDispatch();
   const { register, control, handleSubmit } = useForm();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
+  const token = useSelector((state) => state.user.token);
 
   const onSubmit = (data) => {
     const ticket = {
       ...data,
       author: user.user_id,
     };
-    axiosWithAuth()
+    axiosWithAuth(token)
       .post("/api/tickets", ticket)
       .then((res) => {
         dispatch(createTicket(res.data));
+        props.setIsOpen(false);
       })
       .catch((err) => console.log(err));
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <Form
+      isOpen={props.isOpen}
+      title="Create ticket"
+      handleSubmit={handleSubmit(onSubmit)}
+    >
       <TextField
         id="title"
         name="title"
@@ -68,6 +76,6 @@ export default function CreateTicketForm() {
       <Button type="submit" variant="contained" color="primary">
         Submit
       </Button>
-    </form>
+    </Form>
   );
 }
