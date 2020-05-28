@@ -10,9 +10,7 @@ import {
 } from "@material-ui/core";
 
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
-import { userRegister } from "../../actions/userActions";
-
-import Form from "./Form";
+import { userRegister } from "../../actions/";
 
 export default function RegisterForm(props) {
   const dispatch = useDispatch();
@@ -23,6 +21,7 @@ export default function RegisterForm(props) {
     triggerValidation,
     errors,
   } = useForm();
+
   const onSubmit = (data) => {
     axiosWithAuth()
       .post("/auth/register", data)
@@ -34,7 +33,8 @@ export default function RegisterForm(props) {
   };
 
   return (
-    <Form title="Register" handleSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h2>Register</h2>
       <TextField
         id="name"
         name="username"
@@ -86,6 +86,6 @@ export default function RegisterForm(props) {
       >
         Register
       </Button>
-    </Form>
+    </form>
   );
 }

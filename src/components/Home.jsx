@@ -4,23 +4,28 @@ import { ButtonGroup, Button, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import { axiosWithAuth } from "../utils/axiosWithAuth";
-import { fetchAllTickets } from "../actions/userActions";
+import { fetchAllTickets } from "../actions/";
+
+import Modal from "./Modal";
 import CreateTicketForm from "./Forms/CreateTicketForm";
 import TicketList from "./TicketList";
 import "./Home.scss";
 
-export default function Home() {
+export default function Home({ history, match }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [tab, setTab] = useState("Open");
-  const token = useSelector((state) => state.user.token);
-  const user = useSelector((state) => state.user.user);
-  const openTickets = useSelector((state) => state.user.openTickets);
-  const resolvedTickets = useSelector((state) => state.user.resolvedTickets);
-  const [tickets, setTickets] = useState(openTickets);
+  const user = useSelector((state) => state.user);
+  const { type } = match.params;
+
+  const openTickets = useSelector((state) => {
+    return state.tickets.filter((ticket) => ticket.resolved === "false");
+  });
+  const resolvedTickets = useSelector((state) => {
+    return state.tickets.filter((ticket) => ticket.resolved === "true");
+  });
 
   useEffect(() => {
-    axiosWithAuth(token)
+    axiosWithAuth()
       .get("/api/tickets")
       .then((res) => {
         const data =
@@ -29,43 +34,44 @@ export default function Home() {
             : res.data;
         dispatch(fetchAllTickets(data));
       });
-  }, [token, dispatch, user]);
-
-  useEffect(() => {
-    const sortedTickets = (array) =>
-      array.sort((a, b) => {
-        return b.posted_time - a.posted_time;
-      });
-    if (tab === "Open") {
-      setTickets(sortedTickets(openTickets));
-    } else if (tab === "Resolved") {
-      setTickets(sortedTickets(resolvedTickets));
-    }
-  }, [tab, openTickets, resolvedTickets, tickets]);
+  }, [user, dispatch]);
 
   return (
     <div className="home-wrapper">
       <header>
         <ButtonGroup
-          onClick={(evt) => setTab(evt.target.textContent)}
+          onClick={(evt) =>
+            history.push(`/home/${evt.target.textContent.toLowerCase()}`)
+          }
           variant="text"
           color="primary"
         >
           <Button
-            style={{ backgroundColor: tab === "Open" && "rgba(0,0,0,0.1)" }}
+            style={{
+              backgroundColor: type === "unresolved" && "rgba(0,0,0,0.1)",
+            }}
           >
-            Open
+            Unresolved
           </Button>
           <Button
-            style={{ backgroundColor: tab === "Resolved" && "rgba(0,0,0,0.1)" }}
+            style={{
+              backgroundColor: type === "resolved" && "rgba(0,0,0,0.1)",
+            }}
           >
             Resolved
           </Button>
         </ButtonGroup>
       </header>
       <main>
-        <TicketList tickets={tickets} />
-        <CreateTicketForm isOpen={isOpen} setIsOpen={setIsOpen} />
+        <TicketList
+          tickets={
+            (type === "unresolved" && openTickets) ||
+            (type === "resolved" && resolvedTickets)
+          }
+        />
+        <Modal startOpen={isOpen}>
+          <CreateTicketForm />
+        </Modal>
       </main>
       <footer>
         <Fab onClick={() => setIsOpen(!isOpen)} color="primary">
