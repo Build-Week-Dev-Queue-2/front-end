@@ -4,9 +4,7 @@ import { useDispatch } from "react-redux";
 import { TextField, Button, FormGroup } from "@material-ui/core";
 
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
-import { userLogin } from "../../actions/userActions";
-
-import Form from "./Form";
+import { userLogin } from "../../actions/";
 
 export default function LoginForm(props) {
   const dispatch = useDispatch();
@@ -15,14 +13,15 @@ export default function LoginForm(props) {
     axiosWithAuth()
       .post("/auth/login", data)
       .then((res) => {
-        dispatch(userLogin(res.data.token));
-        props.history.push("/home");
+        dispatch(userLogin(res.data));
+        props.history.push("/home/unresolved");
       })
       .catch((err) => console.log(err));
   };
 
   return (
-    <Form title="Login" handleSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h2>Log In</h2>
       <TextField
         id="name"
         name="username"
@@ -61,6 +60,6 @@ export default function LoginForm(props) {
           Register
         </Button>
       </FormGroup>
-    </Form>
+    </form>
   );
 }

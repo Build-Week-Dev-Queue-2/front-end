@@ -1,15 +1,14 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
 
 export default function PrivateRoute({ component: Component, ...rest }) {
-  const token = useSelector((state) => state.user.token);
+  const token = sessionStorage.getItem("token");
 
   return (
     <Route
       {...rest}
-      render={() => {
-        return token ? <Component /> : <Redirect to="/login" />;
+      render={(props) => {
+        return token ? <Component {...props} /> : <Redirect to="/login" />;
       }}
     />
   );
