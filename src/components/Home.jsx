@@ -17,7 +17,7 @@ export default function Home({ history, match }) {
   const user = useSelector((state) => state.user);
   const { type } = match.params;
 
-  const openTickets = useSelector((state) => {
+  const unresolvedTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "false");
   });
   const resolvedTickets = useSelector((state) => {
@@ -65,7 +65,7 @@ export default function Home({ history, match }) {
       <main>
         <TicketList
           tickets={
-            (type === "unresolved" && openTickets) ||
+            (type === "unresolved" && unresolvedTickets) ||
             (type === "resolved" && resolvedTickets)
           }
         />
