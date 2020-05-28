@@ -16,7 +16,7 @@ export default function LoginForm(props) {
       .post("/auth/login", data)
       .then((res) => {
         dispatch(userLogin(res.data));
-        props.history.push("/home");
+        props.history.push("/home/unresolved");
       })
       .catch((err) => console.log(err));
   };

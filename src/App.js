@@ -10,7 +10,7 @@ function App() {
   return (
     <Router>
       <Switch>
-        <PrivateRoute path="/home" component={Home} />
+        <PrivateRoute path="/home/:type" component={Home} />
         <Route path="/register" component={RegisterForm} />
         <Route path="/login" component={LoginForm} />
         <Route path="/" component={LoginForm} />

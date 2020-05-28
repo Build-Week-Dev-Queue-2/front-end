@@ -8,8 +8,8 @@ export default function PrivateRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
-      render={() => {
-        return token ? <Component /> : <Redirect to="/login" />;
+      render={(props) => {
+        return token ? <Component {...props} /> : <Redirect to="/login" />;
       }}
     />
   );

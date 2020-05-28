@@ -9,12 +9,12 @@ import CreateTicketForm from "./Forms/CreateTicketForm";
 import TicketList from "./TicketList";
 import "./Home.scss";
 
-export default function Home() {
+export default function Home({ history, match }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [tab, setTab] = useState("Open");
   const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
+  const { type } = match.params;
 
   const openTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "false");
@@ -39,17 +39,23 @@ export default function Home() {
     <div className="home-wrapper">
       <header>
         <ButtonGroup
-          onClick={(evt) => setTab(evt.target.textContent)}
+          onClick={(evt) =>
+            history.push(`/home/${evt.target.textContent.toLowerCase()}`)
+          }
           variant="text"
           color="primary"
         >
           <Button
-            style={{ backgroundColor: tab === "Open" && "rgba(0,0,0,0.1)" }}
+            style={{
+              backgroundColor: type === "unresolved" && "rgba(0,0,0,0.1)",
+            }}
           >
-            Open
+            Unresolved
           </Button>
           <Button
-            style={{ backgroundColor: tab === "Resolved" && "rgba(0,0,0,0.1)" }}
+            style={{
+              backgroundColor: type === "resolved" && "rgba(0,0,0,0.1)",
+            }}
           >
             Resolved
           </Button>
@@ -58,8 +64,8 @@ export default function Home() {
       <main>
         <TicketList
           tickets={
-            (tab === "Open" && openTickets) ||
-            (tab === "Resolved" && resolvedTickets)
+            (type === "unresolved" && openTickets) ||
+            (type === "resolved" && resolvedTickets)
           }
         />
         <CreateTicketForm isOpen={isOpen} setIsOpen={setIsOpen} />
