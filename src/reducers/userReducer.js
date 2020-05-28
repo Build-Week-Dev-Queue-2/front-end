@@ -3,6 +3,8 @@ import {
   USER_REGISTER,
   CREATE_TICKET,
   FETCH_ALL_TICKETS,
+  CREATE_COMMENT,
+  FETCH_COMMENTS,
 } from "../actions/userActions";
 
 const initialState = {
@@ -12,6 +14,7 @@ const initialState = {
     role: "",
     role_id: "",
   },
+  comments: {},
   openTickets: [],
   resolvedTickets: [],
   token: "",
@@ -42,6 +45,27 @@ export const userReducer = (state = initialState, action) => {
         ...state,
         openTickets,
         resolvedTickets,
+      };
+    case FETCH_COMMENTS:
+      const comments = action.payload.reduce((obj, comment) => {
+        obj[comment.ticket_id] = obj[comment.ticket_id]
+          ? [...obj[comment.ticket_id], comment]
+          : [comment];
+        return obj;
+      }, {});
+      return {
+        ...state,
+        comments,
+      };
+    case CREATE_COMMENT:
+      return {
+        ...state,
+        comments: {
+          ...state.comments,
+          [action.payload.ticket_id]: state.comments[action.payload.ticket_id]
+            ? [...state.comments[action.payload.ticket_id], action.payload]
+            : [action.payload],
+        },
       };
     case CREATE_TICKET:
       return {
