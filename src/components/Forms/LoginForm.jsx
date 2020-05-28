@@ -6,8 +6,6 @@ import { TextField, Button, FormGroup } from "@material-ui/core";
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
 import { userLogin } from "../../actions/";
 
-import Form from "./Form";
-
 export default function LoginForm(props) {
   const dispatch = useDispatch();
   const { register, handleSubmit, errors, triggerValidation } = useForm();
@@ -22,7 +20,8 @@ export default function LoginForm(props) {
   };
 
   return (
-    <Form title="Login" handleSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h2>Log In</h2>
       <TextField
         id="name"
         name="username"
@@ -61,6 +60,6 @@ export default function LoginForm(props) {
           Register
         </Button>
       </FormGroup>
-    </Form>
+    </form>
   );
 }

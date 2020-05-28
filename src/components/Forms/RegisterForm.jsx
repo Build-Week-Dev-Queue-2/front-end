@@ -12,8 +12,6 @@ import {
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
 import { userRegister } from "../../actions/";
 
-import Form from "./Form";
-
 export default function RegisterForm(props) {
   const dispatch = useDispatch();
   const {
@@ -23,6 +21,7 @@ export default function RegisterForm(props) {
     triggerValidation,
     errors,
   } = useForm();
+
   const onSubmit = (data) => {
     axiosWithAuth()
       .post("/auth/register", data)
@@ -34,7 +33,8 @@ export default function RegisterForm(props) {
   };
 
   return (
-    <Form title="Register" handleSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <h2>Register</h2>
       <TextField
         id="name"
         name="username"
@@ -86,6 +86,6 @@ export default function RegisterForm(props) {
       >
         Register
       </Button>
-    </Form>
+    </form>
   );
 }

@@ -5,6 +5,8 @@ import AddIcon from "@material-ui/icons/Add";
 
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 import { fetchAllTickets } from "../actions/";
+
+import Modal from "./Modal";
 import CreateTicketForm from "./Forms/CreateTicketForm";
 import TicketList from "./TicketList";
 import "./Home.scss";
@@ -67,7 +69,9 @@ export default function Home({ history, match }) {
             (type === "resolved" && resolvedTickets)
           }
         />
-        <CreateTicketForm isOpen={isOpen} setIsOpen={setIsOpen} />
+        <Modal startOpen={isOpen}>
+          <CreateTicketForm />
+        </Modal>
       </main>
       <footer>
         <Fab onClick={() => setIsOpen(!isOpen)} color="primary">
