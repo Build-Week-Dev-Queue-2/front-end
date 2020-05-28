@@ -15,7 +15,6 @@ import { axiosWithAuth } from "../utils/axiosWithAuth";
 export default function Ticket({ ticket }) {
   const dispatch = useDispatch();
   const comments = useSelector((state) => state.comments[ticket.ticket_id]);
-  const token = useSelector((state) => state.token);
   const userId = useSelector((state) => state.user.user_id);
   const [message, setMessage] = useState("");
 
@@ -27,7 +26,7 @@ export default function Ticket({ ticket }) {
       ticket_id: ticket.ticket_id,
     };
 
-    axiosWithAuth(token)
+    axiosWithAuth()
       .post("/api/comments", comment)
       .then((res) => {
         console.log(res.data);

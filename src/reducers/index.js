@@ -16,22 +16,21 @@ const initialState = {
   },
   comments: {},
   tickets: [],
-  token: "",
 };
 
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
     case USER_LOGIN:
+      sessionStorage.setItem("token", action.payload.token);
       return {
         ...state,
         user: action.payload.user,
-        token: action.payload.token,
       };
     case USER_REGISTER:
+      sessionStorage.setItem("token", action.payload.token);
       return {
         ...state,
         user: action.payload.user,
-        token: action.payload.token,
       };
     case FETCH_ALL_TICKETS:
       return {

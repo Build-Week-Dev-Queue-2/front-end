@@ -18,14 +18,13 @@ export default function CreateTicketForm(props) {
   const dispatch = useDispatch();
   const { register, control, handleSubmit } = useForm();
   const user = useSelector((state) => state.user);
-  const token = useSelector((state) => state.token);
 
   const onSubmit = (data) => {
     const ticket = {
       ...data,
       author: user.user_id,
     };
-    axiosWithAuth(token)
+    axiosWithAuth()
       .post("/api/tickets", ticket)
       .then((res) => {
         dispatch(createTicket(res.data));

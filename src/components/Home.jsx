@@ -12,7 +12,6 @@ import "./Home.scss";
 export default function Home({ history, match }) {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const token = useSelector((state) => state.token);
   const user = useSelector((state) => state.user);
   const { type } = match.params;
 
@@ -24,7 +23,7 @@ export default function Home({ history, match }) {
   });
 
   useEffect(() => {
-    axiosWithAuth(token)
+    axiosWithAuth()
       .get("/api/tickets")
       .then((res) => {
         const data =
@@ -33,7 +32,7 @@ export default function Home({ history, match }) {
             : res.data;
         dispatch(fetchAllTickets(data));
       });
-  }, [token, dispatch, user]);
+  }, [user, dispatch]);
 
   return (
     <div className="home-wrapper">

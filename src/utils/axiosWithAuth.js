@@ -1,9 +1,10 @@
 import axios from "axios";
 
-export const axiosWithAuth = (token = "") => {
+export const axiosWithAuth = () => {
+  const token = sessionStorage.getItem("token");
   return axios.create({
     headers: {
-      Authorization: token,
+      authorization: token,
     },
     baseURL: "https://devdesk2lambda.herokuapp.com/",
   });
