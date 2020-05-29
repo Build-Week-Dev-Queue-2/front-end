@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   TextField,
   Button,
@@ -10,7 +10,11 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import { createComment, markResolved } from "../actions/";
+import { axiosWithAuth } from "../utils/axiosWithAuth";
+
 export default function TicketDetails({ ticket }) {
+  const dispatch = useDispatch();
   const {
     register,
     control,
@@ -18,10 +22,25 @@ export default function TicketDetails({ ticket }) {
     triggerValidation,
     errors,
   } = useForm();
+  const user = useSelector((state) => state.user);
   const comments = useSelector((state) => state.comments[ticket.ticket_id]);
   const [isEditing, setIsEditing] = useState(false);
 
   const onSubmit = (data) => console.log(data);
+  const submitComment = (data) => {
+    const comment = {
+      author: user.user_id,
+      message: data.message,
+      ticket_id: ticket.ticket_id,
+    };
+
+    axiosWithAuth()
+      .post("/api/comments", comment)
+      .then((res) => {
+        dispatch(createComment(res.data));
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div>
@@ -69,26 +88,30 @@ export default function TicketDetails({ ticket }) {
           <p>{ticket.date}</p>
           <p>{ticket.content}</p>
           <p>{ticket.category}</p>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsEditing(!isEditing)}
+          >
             Edit
           </Button>
-          {comments &&
-            comments.map((comment) => {
-              return (
-                <Typography>{`${comment.author}: ${comment.message}`}</Typography>
-              );
-            })}
-          <form onSubmit={() => console.log("commented.")}>
-            <TextField
-              name="message"
-              label="Message"
-              variant="outlined"
-              style={{ width: "100%" }}
-              onChange={(evt) => console.log(evt.target.value)}
-            />
-          </form>
         </>
       )}
+      {comments &&
+        comments.map((comment) => {
+          return (
+            <Typography>{`${comment.author}: ${comment.message}`}</Typography>
+          );
+        })}
+      <form onSubmit={handleSubmit(submitComment)}>
+        <TextField
+          name="message"
+          label="Message"
+          variant="outlined"
+          style={{ width: "100%" }}
+          inputRef={register}
+        />
+      </form>
     </div>
   );
 }

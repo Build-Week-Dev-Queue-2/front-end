@@ -2,28 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ButtonGroup, Button, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import MenuIcon from "@material-ui/icons/Menu";
 
 import { axiosWithAuth } from "../utils/axiosWithAuth";
-import { fetchAllTickets } from "../actions/";
+import { fetchAllTickets, editTicket } from "../actions/";
 
 import Modal from "./Modal";
 import CreateTicketForm from "./Forms/CreateTicketForm";
+import TicketDetails from "./TicketDetails";
 import TicketList from "./TicketList";
 import "./Home.scss";
 
 export default function Home({ history, match }) {
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((state) => state.user);
-  const { type } = match.params;
-
   const unresolvedTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "false");
   });
   const resolvedTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "true");
   });
+  const ticketToEdit = useSelector((state) => state.ticketToEdit);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     axiosWithAuth()
@@ -37,6 +36,15 @@ export default function Home({ history, match }) {
       });
   }, [user, dispatch]);
 
+  useEffect(() => {
+    ticketToEdit.ticket_id && setIsOpen(true);
+  }, [ticketToEdit]);
+
+  const closeModal = () => {
+    setIsOpen(false);
+    dispatch(editTicket({}));
+  };
+
   return (
     <div className="home-wrapper">
       <header>
@@ -49,36 +57,42 @@ export default function Home({ history, match }) {
         >
           <Button
             style={{
-              backgroundColor: type === "unresolved" && "rgba(0,0,0,0.1)",
+              backgroundColor:
+                match.params.type === "unresolved" && "rgba(0,0,0,0.1)",
             }}
           >
             Unresolved
           </Button>
           <Button
             style={{
-              backgroundColor: type === "resolved" && "rgba(0,0,0,0.1)",
+              backgroundColor:
+                match.params.type === "resolved" && "rgba(0,0,0,0.1)",
             }}
           >
             Resolved
           </Button>
         </ButtonGroup>
-        <Button>
-          <MenuIcon />
+        <Button variant="contained" color="secondary" disableElevation>
+          Logout
         </Button>
       </header>
       <main>
         <TicketList
           tickets={
-            (type === "unresolved" && unresolvedTickets) ||
-            (type === "resolved" && resolvedTickets)
+            (match.params.type === "unresolved" && unresolvedTickets) ||
+            (match.params.type === "resolved" && resolvedTickets)
           }
         />
-        <Modal startOpen={isOpen}>
-          <CreateTicketForm />
+        <Modal isOpen={isOpen} setIsOpen={closeModal}>
+          {!ticketToEdit.ticket_id ? (
+            <CreateTicketForm />
+          ) : (
+            <TicketDetails ticket={ticketToEdit} />
+          )}
         </Modal>
       </main>
       <footer>
-        <Fab onClick={() => setIsOpen(!isOpen)} color="primary">
+        <Fab onClick={() => setIsOpen(true)} color="primary">
           <AddIcon />
         </Fab>
       </footer>
