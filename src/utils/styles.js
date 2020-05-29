@@ -95,3 +95,16 @@ export const FlexDiv = styled.div`
   align-items: center;
   width: 100%;
 `;
+
+export const HomeStyledHeader = styled.header`
+  background: ${BLUE} !important;
+  display: flex;
+`;
+
+export const HomeStyledButton = styled(Button)`
+  background: ${WHITE};
+  &:hover {
+    background: ${DARK_BLUE} !important;
+    color: ${WHITE};
+  }
+`;
