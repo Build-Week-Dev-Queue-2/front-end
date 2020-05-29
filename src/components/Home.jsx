@@ -14,16 +14,14 @@ import "./Home.scss";
 
 export default function Home({ history, match }) {
   const dispatch = useDispatch();
-  const [isOpen, setIsOpen] = useState(false);
   const user = useSelector((state) => state.user);
-  const { type } = match.params;
-
   const unresolvedTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "false");
   });
   const resolvedTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "true");
   });
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     axiosWithAuth()
@@ -49,14 +47,16 @@ export default function Home({ history, match }) {
         >
           <Button
             style={{
-              backgroundColor: type === "unresolved" && "rgba(0,0,0,0.1)",
+              backgroundColor:
+                match.params.type === "unresolved" && "rgba(0,0,0,0.1)",
             }}
           >
             Unresolved
           </Button>
           <Button
             style={{
-              backgroundColor: type === "resolved" && "rgba(0,0,0,0.1)",
+              backgroundColor:
+                match.params.type === "resolved" && "rgba(0,0,0,0.1)",
             }}
           >
             Resolved
@@ -69,16 +69,16 @@ export default function Home({ history, match }) {
       <main>
         <TicketList
           tickets={
-            (type === "unresolved" && unresolvedTickets) ||
-            (type === "resolved" && resolvedTickets)
+            (match.params.type === "unresolved" && unresolvedTickets) ||
+            (match.params.type === "resolved" && resolvedTickets)
           }
         />
-        <Modal startOpen={isOpen}>
+        <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
           <CreateTicketForm />
         </Modal>
       </main>
       <footer>
-        <Fab onClick={() => setIsOpen(!isOpen)} color="primary">
+        <Fab onClick={() => setIsOpen(true)} color="primary">
           <AddIcon />
         </Fab>
       </footer>
