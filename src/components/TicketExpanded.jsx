@@ -10,10 +10,10 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { markResolved } from "../actions/";
+import { markResolved } from "../actions";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
-export default function TicketDetails() {
+export default function TicketExpanded() {
   const dispatch = useDispatch();
   const {
     register,

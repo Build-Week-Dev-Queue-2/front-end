@@ -8,7 +8,7 @@ import { fetchAllTickets, editTicket } from "../actions/";
 
 import Modal from "./Modal";
 import CreateTicketForm from "./Forms/CreateTicketForm";
-import TicketDetails from "./TicketDetails";
+import TicketExpanded from "./TicketExpanded";
 import TicketList from "./TicketList";
 import "./Home.scss";
 
@@ -84,11 +84,7 @@ export default function Home({ history, match }) {
           }
         />
         <Modal isOpen={isOpen} setIsOpen={closeModal}>
-          {!ticketToEdit ? (
-            <CreateTicketForm />
-          ) : (
-            <TicketDetails ticket={ticketToEdit} />
-          )}
+          {!ticketToEdit ? <CreateTicketForm /> : <TicketExpanded />}
         </Modal>
       </main>
       <footer>
