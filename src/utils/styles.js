@@ -95,3 +95,67 @@ export const FlexDiv = styled.div`
   align-items: center;
   width: 100%;
 `;
+
+export const HomeStyledHeader = styled.header`
+  background: ${DARK_BLUE} !important;
+  display: flex;
+`;
+
+export const HomeStyledButton = styled(Button)`
+  background: ${WHITE};
+  &:hover {
+    background: ${BLUE} !important;
+    color: ${WHITE};
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+    font-weight: bold;
+  }
+`;
+
+export const StyledTicketWrapper = styled.div`
+  width: 100vw;
+  height: 90vh;
+  padding: 15px 3vw;
+
+  background: ${BLUE};
+
+  .ticket {
+    & + .ticket {
+      margin-top: 45px;
+    }
+
+    h5 {
+      color: white;
+    }
+
+    &_card {
+      background: ${DARK_BLUE};
+
+      color: white;
+
+      .flex {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        font-size: .5rem !important;
+      }
+
+      .m-top {
+        margin-top: 10px;
+      }
+
+      .btn {
+        &-blue {
+          background: ${BLUE};
+        }
+        &-red {
+          background: ${RED};
+        }
+        &-green {
+          background: ${GREEN};
+        }
+        color: ${WHITE};
+        font-weight: bold;
+      }
+    }
+  }
+`;

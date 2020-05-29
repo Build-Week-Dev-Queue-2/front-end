@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Card, CardContent, Typography, Button } from "@material-ui/core";
 import { expandTicket, editTicket } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
+import moment from "moment";
 
 export default function Ticket({ ticket }) {
   const dispatch = useDispatch();
@@ -25,44 +26,57 @@ export default function Ticket({ ticket }) {
   const submitTicketToEdit = () => dispatch(expandTicket(ticket.ticket_id));
 
   return (
-    <Card>
-      <CardContent>
-        <Typography
-          variant="h2"
-          component="h2"
-          color="textSecondary"
-          gutterBottom
-        >
-          {ticket.title}
-        </Typography>
-        <Typography variant="body2" component="p">
-          {ticket.content}
-        </Typography>
-        <Typography variant="h5" component="h3">
-          {ticket.author}
-        </Typography>
-        <Typography variant="h5" component="h3">
-          {ticket.category}
-        </Typography>
-        <Button
-          variant="contained"
-          color="secondary"
-          disableElevation
-          onClick={submitTicketToEdit}
-        >
-          Open
-        </Button>
-        {user.role_id === 2 && (
-          <Button
-            variant="contained"
-            color="secondary"
-            disableElevation
-            onClick={markResolved}
-          >
-            {ticket.resolved === "false" ? "Mark Resolved" : "Mark Unresolved"}
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+    <div className="ticket">
+      <Typography
+        variant="h5"
+        component="h5"
+        color="textSecondary"
+        gutterBottom
+      >
+        {ticket.title}
+      </Typography>
+      <Card className="ticket_card">
+        <CardContent>
+          <div>
+            <div className="flex">
+              <Typography variant="h5" component="p">
+                {ticket.author}
+              </Typography>
+              <Typography variant="h5" component="p">
+                {moment(parseInt(ticket.posted_time)).format("MMMM Do YYYY")}
+              </Typography>
+            </div>
+            <Typography variant="body2" component="p">
+              {ticket.content}
+            </Typography>
+          </div>
+          <div className="flex m-top">
+            <Button
+              variant="contained"
+              color="secondary"
+              className="btn btn-blue"
+              disableElevation
+              onClick={submitTicketToEdit}
+            >
+              Open
+            </Button>
+            {user.role_id === 2 && (
+              <Button
+                variant="contained"
+                className={`btn ${
+                  ticket.resolved === "false" ? "btn-red" : "btn-green"
+                }`}
+                disableElevation
+                onClick={markResolved}
+              >
+                {ticket.resolved === "false"
+                  ? "Mark Resolved"
+                  : "Mark Unresolved"}
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

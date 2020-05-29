@@ -13,6 +13,22 @@ import TicketExpanded from "./TicketExpanded";
 import TicketList from "./TicketList";
 import "./Home.scss";
 
+import { 
+  DARK_BLUE,
+  BLUE,
+  LIGHT_BLUE,
+  GREEN,
+  RED,
+  WHITE,
+  GRAY,
+  BLACK,
+  HIGHLIGHT_BLUE,
+  HomeStyledHeader,
+  HomeStyledButton
+} from '../utils/styles'
+
+import styled from 'styled-components';
+
 export default function Home({ history, match }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
@@ -48,7 +64,7 @@ export default function Home({ history, match }) {
 
   return (
     <div className="home-wrapper">
-      <header>
+      <HomeStyledHeader>
         <ButtonGroup
           onClick={(evt) =>
             history.push(`/home/${evt.target.textContent.toLowerCase()}`)
@@ -56,25 +72,25 @@ export default function Home({ history, match }) {
           variant="text"
           color="primary"
         >
-          <Button
+          <HomeStyledButton
             style={{
               backgroundColor:
-                match.params.type === "unresolved" && "rgba(0,0,0,0.1)",
+                match.params.type === "unresolved" && GRAY,
             }}
           >
             Unresolved
-          </Button>
-          <Button
+          </HomeStyledButton>
+          <HomeStyledButton
             style={{
               backgroundColor:
-                match.params.type === "resolved" && "rgba(0,0,0,0.1)",
+                match.params.type === "resolved" && GRAY,
             }}
           >
             Resolved
-          </Button>
+          </HomeStyledButton>
         </ButtonGroup>
         <Logout />
-      </header>
+      </HomeStyledHeader>
       <main>
         <TicketList
           tickets={
