@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ButtonGroup, Button, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-import MenuIcon from "@material-ui/icons/Menu";
 
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 import { fetchAllTickets } from "../actions/";
@@ -62,8 +61,8 @@ export default function Home({ history, match }) {
             Resolved
           </Button>
         </ButtonGroup>
-        <Button>
-          <MenuIcon />
+        <Button variant="contained" color="secondary" disableElevation>
+          Logout
         </Button>
       </header>
       <main>
