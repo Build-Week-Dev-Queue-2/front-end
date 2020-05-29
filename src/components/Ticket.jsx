@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
+  Card,
   CardContent,
   Typography,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
   TextField,
   Button,
 } from "@material-ui/core";
@@ -59,59 +57,36 @@ export default function Ticket({ ticket }) {
   };
 
   return (
-    <ExpansionPanel style={{ overflowX: "hidden" }}>
-      <ExpansionPanelSummary>
-        <CardContent>
-          <Typography
-            variant="h2"
-            component="h2"
-            color="textSecondary"
-            gutterBottom
+    <Card>
+      <CardContent>
+        <Typography
+          variant="h2"
+          component="h2"
+          color="textSecondary"
+          gutterBottom
+        >
+          {ticket.title}
+        </Typography>
+        <Typography variant="body2" component="p">
+          {ticket.content}
+        </Typography>
+        <Typography variant="h5" component="h3">
+          {ticket.author}
+        </Typography>
+        <Typography variant="h5" component="h3">
+          {ticket.category}
+        </Typography>
+        {user.role_id === 2 && (
+          <Button
+            variant="contained"
+            color="secondary"
+            disableElevation
+            onClick={submitMarkResolved}
           >
-            {ticket.title}
-          </Typography>
-          <Typography variant="body2" component="p">
-            {ticket.content}
-          </Typography>
-          <Typography variant="h5" component="h3">
-            {ticket.author}
-          </Typography>
-          <Typography variant="h5" component="h3">
-            {ticket.category}
-          </Typography>
-          {user.role_id === 2 && (
-            <Button
-              variant="contained"
-              color="secondary"
-              disableElevation
-              onClick={submitMarkResolved}
-            >
-              {ticket.resolved === "false"
-                ? "Mark Resolved"
-                : "Unmark Resolved"}
-            </Button>
-          )}
-        </CardContent>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails
-        style={{ display: "flex", flexDirection: "column" }}
-      >
-        {comments &&
-          comments.map((comment) => {
-            return (
-              <Typography>{`${comment.author}: ${comment.message}`}</Typography>
-            );
-          })}
-        <form onSubmit={submitComment}>
-          <TextField
-            name="message"
-            label="Message"
-            variant="outlined"
-            style={{ width: "100%" }}
-            onChange={(evt) => setMessage(evt.target.value)}
-          />
-        </form>
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+            {ticket.resolved === "false" ? "Mark Resolved" : "Unmark Resolved"}
+          </Button>
+        )}
+      </CardContent>
+    </Card>
   );
 }
