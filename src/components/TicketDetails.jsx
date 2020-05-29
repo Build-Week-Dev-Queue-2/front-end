@@ -26,7 +26,16 @@ export default function TicketDetails({ ticket }) {
   const comments = useSelector((state) => state.comments[ticket.ticket_id]);
   const [isEditing, setIsEditing] = useState(false);
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmitEdit = (data) => {
+    axiosWithAuth()
+      .put(`/api/tickets/${ticket.ticket_id}`, data)
+      .then((res) => {
+        console.log(markResolved(res.data));
+        dispatch(markResolved(res.data));
+      })
+      .catch((err) => console.log(err.response.data.message));
+  };
+
   const submitComment = (data) => {
     const comment = {
       author: user.user_id,
@@ -45,7 +54,7 @@ export default function TicketDetails({ ticket }) {
   return (
     <div>
       {isEditing ? (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmitEdit)}>
           <TextField
             id="title"
             name="title"
