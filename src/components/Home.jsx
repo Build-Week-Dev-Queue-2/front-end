@@ -38,7 +38,7 @@ export default function Home({ history, match }) {
   }, [user, dispatch]);
 
   useEffect(() => {
-    expandedTicketId && setIsOpen(true);
+    expandedTicketId ? setIsOpen(true) : setIsOpen(false);
   }, [expandedTicketId]);
 
   const closeModal = () => {

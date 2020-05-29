@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { editTicket } from "../actions";
+import { editTicket, expandTicket } from "../actions";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function TicketExpanded() {
@@ -44,7 +44,7 @@ export default function TicketExpanded() {
     axiosWithAuth()
       .put(`/api/tickets/${ticket.ticket_id}`, data)
       .then((res) => {
-        console.log(editTicket(res.data));
+        dispatch(expandTicket(null));
         dispatch(editTicket(res.data));
       })
       .catch((err) => console.log(err.response.data.message));
