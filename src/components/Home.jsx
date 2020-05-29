@@ -4,10 +4,11 @@ import { ButtonGroup, Button, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import { axiosWithAuth } from "../utils/axiosWithAuth";
-import { fetchAllTickets } from "../actions/";
+import { fetchAllTickets, editTicket } from "../actions/";
 
 import Modal from "./Modal";
 import CreateTicketForm from "./Forms/CreateTicketForm";
+import TicketDetails from "./TicketDetails";
 import TicketList from "./TicketList";
 import "./Home.scss";
 
@@ -20,6 +21,7 @@ export default function Home({ history, match }) {
   const resolvedTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "true");
   });
+  const ticketToEdit = useSelector((state) => state.ticketToEdit);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -33,6 +35,15 @@ export default function Home({ history, match }) {
         dispatch(fetchAllTickets(data));
       });
   }, [user, dispatch]);
+
+  useEffect(() => {
+    ticketToEdit.ticket_id && setIsOpen(true);
+  }, [ticketToEdit]);
+
+  const closeModal = () => {
+    setIsOpen(false);
+    dispatch(editTicket({}));
+  };
 
   return (
     <div className="home-wrapper">
@@ -72,8 +83,12 @@ export default function Home({ history, match }) {
             (match.params.type === "resolved" && resolvedTickets)
           }
         />
-        <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-          <CreateTicketForm />
+        <Modal isOpen={isOpen} setIsOpen={closeModal}>
+          {!ticketToEdit.ticket_id ? (
+            <CreateTicketForm />
+          ) : (
+            <TicketDetails ticket={ticketToEdit} />
+          )}
         </Modal>
       </main>
       <footer>

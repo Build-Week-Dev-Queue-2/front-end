@@ -1,13 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-} from "@material-ui/core";
-import { createComment, markResolved } from "../actions/";
+import { Card, CardContent, Typography, Button } from "@material-ui/core";
+import { editTicket, createComment, markResolved } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function Ticket({ ticket }) {
@@ -56,6 +50,8 @@ export default function Ticket({ ticket }) {
       .catch((err) => console.log(err.response.data.message));
   };
 
+  const submitTicketToEdit = () => dispatch(editTicket(ticket));
+
   return (
     <Card>
       <CardContent>
@@ -76,6 +72,14 @@ export default function Ticket({ ticket }) {
         <Typography variant="h5" component="h3">
           {ticket.category}
         </Typography>
+        <Button
+          variant="contained"
+          color="secondary"
+          disableElevation
+          onClick={submitTicketToEdit}
+        >
+          Open
+        </Button>
         {user.role_id === 2 && (
           <Button
             variant="contained"

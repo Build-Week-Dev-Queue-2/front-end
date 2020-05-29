@@ -1,8 +1,9 @@
 import {
   USER_LOGIN,
   USER_REGISTER,
-  CREATE_TICKET,
   FETCH_ALL_TICKETS,
+  CREATE_TICKET,
+  EDIT_TICKET,
   CREATE_COMMENT,
   FETCH_COMMENTS,
   MARK_RESOLVED,
@@ -16,8 +17,9 @@ const initialState = {
     role: "",
     role_id: "",
   },
-  comments: {},
   tickets: [],
+  ticketToEdit: {},
+  comments: {},
 };
 
 export const reducer = (state = initialState, action) => {
@@ -67,6 +69,11 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         tickets: [...state.tickets, action.payload],
+      };
+    case EDIT_TICKET:
+      return {
+        ...state,
+        ticketToEdit: action.payload,
       };
     case MARK_RESOLVED:
       return {
