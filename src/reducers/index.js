@@ -1,11 +1,10 @@
 import {
   USER_LOGIN,
   USER_REGISTER,
-  CREATE_TICKET,
   FETCH_ALL_TICKETS,
-  CREATE_COMMENT,
-  FETCH_COMMENTS,
-  MARK_RESOLVED,
+  CREATE_TICKET,
+  EXPAND_TICKET,
+  EDIT_TICKET,
 } from "../actions/";
 
 const savedUser = JSON.parse(sessionStorage.getItem("user"));
@@ -16,8 +15,8 @@ const initialState = {
     role: "",
     role_id: "",
   },
-  comments: {},
   tickets: [],
+  expandedTicketId: null,
 };
 
 export const reducer = (state = initialState, action) => {
@@ -42,33 +41,17 @@ export const reducer = (state = initialState, action) => {
         ...state,
         tickets: action.payload,
       };
-    case FETCH_COMMENTS:
-      const comments = action.payload.reduce((obj, comment) => {
-        obj[comment.ticket_id] = obj[comment.ticket_id]
-          ? [...obj[comment.ticket_id], comment]
-          : [comment];
-        return obj;
-      }, {});
-      return {
-        ...state,
-        comments,
-      };
-    case CREATE_COMMENT:
-      return {
-        ...state,
-        comments: {
-          ...state.comments,
-          [action.payload.ticket_id]: state.comments[action.payload.ticket_id]
-            ? [...state.comments[action.payload.ticket_id], action.payload]
-            : [action.payload],
-        },
-      };
     case CREATE_TICKET:
       return {
         ...state,
         tickets: [...state.tickets, action.payload],
       };
-    case MARK_RESOLVED:
+    case EXPAND_TICKET:
+      return {
+        ...state,
+        expandedTicketId: action.payload,
+      };
+    case EDIT_TICKET:
       return {
         ...state,
         tickets: state.tickets.map((ticket) => {

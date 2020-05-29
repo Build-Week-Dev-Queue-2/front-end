@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { Paper, Backdrop, ClickAwayListener } from "@material-ui/core";
+import React from "react";
+import { Paper, Backdrop, Button } from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 import "./Modal.scss";
 
-export default function Form({ startOpen = false, children }) {
-  const [isOpen, setIsOpen] = useState(startOpen);
-
-  useEffect(() => {
-    setIsOpen(startOpen);
-  }, [startOpen]);
-
+export default function Form({ isOpen, setIsOpen, children }) {
   return (
-    <Backdrop open={isOpen} style={{ zIndex: 1 }}>
-      <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-        <Paper className="modal-container">{children}</Paper>
-      </ClickAwayListener>
-    </Backdrop>
+    isOpen && (
+      <Backdrop open={isOpen} style={{ zIndex: 1 }}>
+        <Paper className="modal-container">
+          <Button onClick={() => setIsOpen(false)}>
+            <CloseIcon />
+          </Button>
+          {children}
+        </Paper>
+      </Backdrop>
+    )
   );
 }
