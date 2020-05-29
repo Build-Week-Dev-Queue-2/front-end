@@ -4,7 +4,7 @@ import {
   FETCH_ALL_TICKETS,
   CREATE_TICKET,
   EXPAND_TICKET,
-  MARK_RESOLVED,
+  EDIT_TICKET,
 } from "../actions/";
 
 const savedUser = JSON.parse(sessionStorage.getItem("user"));
@@ -51,7 +51,7 @@ export const reducer = (state = initialState, action) => {
         ...state,
         expandedTicketId: action.payload,
       };
-    case MARK_RESOLVED:
+    case EDIT_TICKET:
       return {
         ...state,
         tickets: state.tickets.map((ticket) => {

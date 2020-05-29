@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Card, CardContent, Typography, Button } from "@material-ui/core";
-import { expandTicket, markResolved } from "../actions/";
+import { expandTicket, editTicket } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function Ticket({ ticket }) {
@@ -26,7 +26,7 @@ export default function Ticket({ ticket }) {
       .put(`/api/tickets/${ticket.ticket_id}`, resolvedTicket)
       .then((res) => {
         console.log(res.data);
-        dispatch(markResolved(res.data));
+        dispatch(editTicket(res.data));
       })
       .catch((err) => console.log(err.response.data.message));
   };

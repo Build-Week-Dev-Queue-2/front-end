@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { markResolved } from "../actions";
+import { editTicket } from "../actions";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function TicketExpanded() {
@@ -44,8 +44,8 @@ export default function TicketExpanded() {
     axiosWithAuth()
       .put(`/api/tickets/${ticket.ticket_id}`, data)
       .then((res) => {
-        console.log(markResolved(res.data));
-        dispatch(markResolved(res.data));
+        console.log(editTicket(res.data));
+        dispatch(editTicket(res.data));
       })
       .catch((err) => console.log(err.response.data.message));
   };
