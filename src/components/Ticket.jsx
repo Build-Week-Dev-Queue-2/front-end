@@ -7,25 +7,16 @@ import { axiosWithAuth } from "../utils/axiosWithAuth";
 export default function Ticket({ ticket }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  const [isResolved, setIsResolved] = useState(false);
 
-  const submitMarkResolved = (evt) => {
-    evt.stopPropagation();
-
-    setIsResolved(!isResolved);
-
+  const markResolved = () => {
     const resolvedTicket = {
-      resolved: isResolved ? "true" : "false",
+      resolved: ticket.resolved === "true" ? "false" : "true",
       resolved_by: user.user_id,
       resolved_time: Date.now(),
     };
-
-    console.log({ resolvedTicket });
-
     axiosWithAuth()
       .put(`/api/tickets/${ticket.ticket_id}`, resolvedTicket)
       .then((res) => {
-        console.log(res.data);
         dispatch(editTicket(res.data));
       })
       .catch((err) => console.log(err.response.data.message));
@@ -66,7 +57,7 @@ export default function Ticket({ ticket }) {
             variant="contained"
             color="secondary"
             disableElevation
-            onClick={submitMarkResolved}
+            onClick={markResolved}
           >
             {ticket.resolved === "false" ? "Mark Resolved" : "Unmark Resolved"}
           </Button>
