@@ -1,6 +1,25 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
+import { 
+  DARK_BLUE,
+  BLUE,
+  LIGHT_BLUE,
+  GREEN,
+  RED,
+  WHITE,
+  GRAY,
+  BLACK,
+  HIGHLIGHT_BLUE,
+  StyledTitle,
+  StyledForm,
+  StyledButton,
+  StyledTextField,
+  StyledFormGroup,
+  StyledWrapper,
+  FlexDiv,
+  MarginLeft,
+} from '../../utils/styles'
 import {
   TextField,
   Button,
@@ -8,7 +27,8 @@ import {
   InputLabel,
   MenuItem,
 } from "@material-ui/core";
-
+import { makeStyles } from '@material-ui/core/styles';
+import styled from 'styled-components';
 import { axiosWithAuth } from "../../utils/axiosWithAuth";
 import { userRegister } from "../../actions/";
 
@@ -27,65 +47,89 @@ export default function RegisterForm(props) {
       .post("/auth/register", data)
       .then((res) => {
         dispatch(userRegister(res.data));
-        props.history.push("/home");
+        props.history.push("/home/unresolved");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(data, err.response.data));
   };
 
+  const styles = makeStyles({
+    dropdown: {
+      color: WHITE,
+      '&:before': {
+        borderColor: WHITE,
+
+      },
+      '&:after': {
+        borderColor: WHITE,
+      },
+    },
+    arrow: {
+      fill: 'white',
+    }
+  });
+
+  const classes = styles();
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h2>Register</h2>
-      <TextField
-        id="name"
-        name="username"
-        label="Name"
-        variant="outlined"
-        inputRef={register({
-          required: "Name is required",
-        })}
-        error={errors.username}
-        helperText={errors.username && errors.username.message}
-        onBlur={() => triggerValidation("username")}
-        className="form-item"
-      />
-      <TextField
-        id="password"
-        name="password"
-        label="Password"
-        variant="outlined"
-        inputRef={register({
-          required: "Password is required",
-          minLength: 8,
-        })}
-        error={errors.password}
-        helperText={
-          (errors.password && errors.password.message) ||
-          (errors.password && "Password must be atleast 8 characters")
-        }
-        onBlur={() => triggerValidation("password")}
-        className="form-item"
-      />
-      <InputLabel id="role">Role</InputLabel>
-      <Controller
-        as={Select}
-        control={control}
-        name="role_id"
-        labelId="role"
-        defaultValue={1}
-        className="form-item"
-      >
-        <MenuItem value={1}>Student</MenuItem>
-        <MenuItem value={2}>Helper</MenuItem>
-        <MenuItem value={3}>Student &amp; Helper</MenuItem>
-      </Controller>
-      <Button
-        type="submit"
-        variant="contained"
-        color="primary"
-        className="form-item button"
-      >
-        Register
-      </Button>
-    </form>
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledWrapper>
+        <StyledTitle >Register</StyledTitle>
+        <StyledTextField
+          id="name"
+          name="username"
+          label="Name"
+          variant="outlined"
+          placeholder='Username'
+          ref={register({
+            required: "Name is required",
+          })}
+          error={errors.username}
+          helperText={errors.username && errors.username.message}
+          onBlur={() => triggerValidation("username")}
+        />
+        <StyledTextField
+            id="password"
+            type='password'
+          name="password"
+          label="Password"
+          variant="outlined"
+          placeholder='Password'
+          ref={register({
+            required: "Password is required",
+            minLength: 8,
+          })}
+          error={errors.password}
+          helperText={
+            (errors.password && errors.password.message) ||
+            (errors.password && "Password must be atleast 8 characters")
+          }
+          onBlur={() => triggerValidation("password")}
+        />
+          <Controller
+            as={Select}
+            control={control}
+            name="role_id"
+            labelId="role"
+            defaultValue={1}
+            className={classes.dropdown}
+            inputProps={{
+              classes: {
+                icon: classes.arrow
+              }
+            }}
+          >
+            <MenuItem value={1}>Student</MenuItem>
+            <MenuItem value={2}>Helper</MenuItem>
+          </Controller>
+          <MarginLeft
+            type="submit"
+            variant="contained"
+            color="primary"
+            className="form-item button"
+          >
+            Register
+          </MarginLeft>
+      </StyledWrapper>
+    </StyledForm>
   );
 }
