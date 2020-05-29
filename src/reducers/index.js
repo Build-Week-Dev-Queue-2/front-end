@@ -4,7 +4,6 @@ import {
   FETCH_ALL_TICKETS,
   CREATE_TICKET,
   EDIT_TICKET,
-  CREATE_COMMENT,
   FETCH_COMMENTS,
   MARK_RESOLVED,
 } from "../actions/";
@@ -18,8 +17,7 @@ const initialState = {
     role_id: "",
   },
   tickets: [],
-  ticketToEdit: {},
-  comments: {},
+  ticketToEdit: null,
 };
 
 export const reducer = (state = initialState, action) => {
@@ -55,16 +53,6 @@ export const reducer = (state = initialState, action) => {
         ...state,
         comments,
       };
-    case CREATE_COMMENT:
-      return {
-        ...state,
-        comments: {
-          ...state.comments,
-          [action.payload.ticket_id]: state.comments[action.payload.ticket_id] // if comments for this ticket exist
-            ? [...state.comments[action.payload.ticket_id], action.payload] // spread out the comments and add the new comment
-            : [action.payload], // otherwise return a new array with the newly created comment
-        },
-      };
     case CREATE_TICKET:
       return {
         ...state,
@@ -73,7 +61,7 @@ export const reducer = (state = initialState, action) => {
     case EDIT_TICKET:
       return {
         ...state,
-        ticketToEdit: action.payload,
+        ticketToEdit: action.payload.ticket_id,
       };
     case MARK_RESOLVED:
       return {

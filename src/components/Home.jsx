@@ -37,7 +37,7 @@ export default function Home({ history, match }) {
   }, [user, dispatch]);
 
   useEffect(() => {
-    ticketToEdit.ticket_id && setIsOpen(true);
+    ticketToEdit && setIsOpen(true);
   }, [ticketToEdit]);
 
   const closeModal = () => {
@@ -84,7 +84,7 @@ export default function Home({ history, match }) {
           }
         />
         <Modal isOpen={isOpen} setIsOpen={closeModal}>
-          {!ticketToEdit.ticket_id ? (
+          {!ticketToEdit ? (
             <CreateTicketForm />
           ) : (
             <TicketDetails ticket={ticketToEdit} />
