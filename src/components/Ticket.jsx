@@ -1,58 +1,30 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Card, CardContent, Typography, Button } from "@material-ui/core";
-import { editTicket, createComment, markResolved } from "../actions/";
+import { expandTicket, editTicket } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 import moment from 'moment';
 
 export default function Ticket({ ticket }) {
   const dispatch = useDispatch();
-  const comments = useSelector((state) => state.comments[ticket.ticket_id]);
   const user = useSelector((state) => state.user);
-  const [message, setMessage] = useState("");
-  const [isResolved, setIsResolved] = useState(false);
 
-  const submitComment = (evt) => {
-    evt.preventDefault();
-    const comment = {
-      author: user.user_id,
-      message: message,
-      ticket_id: ticket.ticket_id,
-    };
-
-    axiosWithAuth()
-      .post("/api/comments", comment)
-      .then((res) => {
-        console.log(res.data);
-        dispatch(createComment(res.data));
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const submitMarkResolved = (evt) => {
-    evt.stopPropagation();
-
-    setIsResolved(!isResolved);
-
+  const markResolved = () => {
     const resolvedTicket = {
-      resolved: isResolved ? "true" : "false",
+      resolved: ticket.resolved === "true" ? "false" : "true",
       resolved_by: user.user_id,
       resolved_time: Date.now(),
     };
-
-    console.log({ resolvedTicket });
-
     axiosWithAuth()
       .put(`/api/tickets/${ticket.ticket_id}`, resolvedTicket)
       .then((res) => {
-        console.log(res.data);
-        dispatch(markResolved(res.data));
+        dispatch(editTicket(res.data));
       })
       .catch((err) => console.log(err.response.data.message));
   };
 
-  const submitTicketToEdit = () => dispatch(editTicket(ticket));
-  
+  const submitTicketToEdit = () => dispatch(expandTicket(ticket.ticket_id));
+
   return (
     <div className='ticket'>
     <Typography
@@ -94,12 +66,12 @@ Quasi nulla doloremque laudantium sed. Et saepe officiis et consequatur. Perspic
         </Button>
         {user.role_id === 2 && (
           <Button
-          variant="contained"
-          className={`btn ${ticket.resolved === 'false' ? 'btn-red' : 'btn-green'}`}
-          disableElevation
-          onClick={submitMarkResolved}
+            variant="contained"
+            className={`btn ${ticket.resolved === 'false' ? 'btn-red' : 'btn-green'}`}
+            disableElevation
+            onClick={submitMarkResolved}
           >
-            {ticket.resolved === "false" ? "Mark Resolved" : "Unmark Resolved"}
+            {ticket.resolved === "false" ? "Mark Resolved" : "Mark Unresolved"}
           </Button>
         )}
         </div>

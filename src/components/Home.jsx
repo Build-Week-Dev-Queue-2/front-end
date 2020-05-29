@@ -4,11 +4,12 @@ import { ButtonGroup, Button, Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 import { axiosWithAuth } from "../utils/axiosWithAuth";
-import { fetchAllTickets, editTicket } from "../actions/";
+import { fetchAllTickets, expandTicket } from "../actions/";
 
+import Logout from "./Logout";
 import Modal from "./Modal";
 import CreateTicketForm from "./Forms/CreateTicketForm";
-import TicketDetails from "./TicketDetails";
+import TicketExpanded from "./TicketExpanded";
 import TicketList from "./TicketList";
 import "./Home.scss";
 
@@ -37,7 +38,7 @@ export default function Home({ history, match }) {
   const resolvedTickets = useSelector((state) => {
     return state.tickets.filter((ticket) => ticket.resolved === "true");
   });
-  const ticketToEdit = useSelector((state) => state.ticketToEdit);
+  const expandedTicketId = useSelector((state) => state.expandedTicketId);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -53,12 +54,12 @@ export default function Home({ history, match }) {
   }, [user, dispatch]);
 
   useEffect(() => {
-    ticketToEdit.ticket_id && setIsOpen(true);
-  }, [ticketToEdit]);
+    expandedTicketId ? setIsOpen(true) : setIsOpen(false);
+  }, [expandedTicketId]);
 
   const closeModal = () => {
     setIsOpen(false);
-    dispatch(editTicket({}));
+    dispatch(expandTicket(null));
   };
 
   return (
@@ -88,9 +89,7 @@ export default function Home({ history, match }) {
             Resolved
           </HomeStyledButton>
         </ButtonGroup>
-        <Button variant="contained" color="secondary" disableElevation>
-          Logout
-        </Button>
+        <Logout />
       </HomeStyledHeader>
       <main>
         <TicketList
@@ -100,11 +99,7 @@ export default function Home({ history, match }) {
           }
         />
         <Modal isOpen={isOpen} setIsOpen={closeModal}>
-          {!ticketToEdit.ticket_id ? (
-            <CreateTicketForm />
-          ) : (
-            <TicketDetails ticket={ticketToEdit} />
-          )}
+          {!expandedTicketId ? <CreateTicketForm /> : <TicketExpanded />}
         </Modal>
       </main>
       <footer>

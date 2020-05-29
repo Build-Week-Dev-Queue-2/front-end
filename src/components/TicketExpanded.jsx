@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -10,10 +10,12 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { createComment, markResolved } from "../actions/";
+import { editTicket, expandTicket } from "../actions";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
-export default function TicketDetails({ ticket }) {
+import ContentPlaceholder from "./ContentPlaceholder";
+
+export default function TicketExpanded() {
   const dispatch = useDispatch();
   const {
     register,
@@ -23,10 +25,33 @@ export default function TicketDetails({ ticket }) {
     errors,
   } = useForm();
   const user = useSelector((state) => state.user);
-  const comments = useSelector((state) => state.comments[ticket.ticket_id]);
+  const ticketId = useSelector((state) => state.expandedTicketId);
   const [isEditing, setIsEditing] = useState(false);
+  const [ticket, setTicket] = useState(null);
+  const [comments, setComments] = useState([]);
 
-  const onSubmit = (data) => console.log(data);
+  useEffect(() => {
+    if (ticketId) {
+      axiosWithAuth()
+        .get(`/api/tickets/${ticketId}`)
+        .then((res) => setTicket(res.data))
+        .catch((err) => console.log(err));
+      axiosWithAuth()
+        .get(`/api/tickets/${ticketId}/comments`)
+        .then((res) => setComments(res.data));
+    }
+  }, [ticketId]);
+
+  const onSubmitEdit = (data) => {
+    axiosWithAuth()
+      .put(`/api/tickets/${ticket.ticket_id}`, data)
+      .then((res) => {
+        dispatch(expandTicket(null));
+        dispatch(editTicket(res.data));
+      })
+      .catch((err) => console.log(err.response.data.message));
+  };
+
   const submitComment = (data) => {
     const comment = {
       author: user.user_id,
@@ -37,7 +62,7 @@ export default function TicketDetails({ ticket }) {
     axiosWithAuth()
       .post("/api/comments", comment)
       .then((res) => {
-        dispatch(createComment(res.data));
+        setComments([...comments, res.data]);
       })
       .catch((err) => console.log(err));
   };
@@ -45,7 +70,7 @@ export default function TicketDetails({ ticket }) {
   return (
     <div>
       {isEditing ? (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmitEdit)}>
           <TextField
             id="title"
             name="title"
@@ -62,7 +87,7 @@ export default function TicketDetails({ ticket }) {
             multiline
             rows={4}
             inputRef={register}
-            defaultValue={ticket.title}
+            defaultValue={ticket.content}
           />
           <InputLabel id="category">Category</InputLabel>
           <Controller
@@ -83,11 +108,15 @@ export default function TicketDetails({ ticket }) {
         </form>
       ) : (
         <>
-          <h1>{ticket.title}</h1>
-          <p>{ticket.author}</p>
-          <p>{ticket.date}</p>
-          <p>{ticket.content}</p>
-          <p>{ticket.category}</p>
+          {ticket ? <h1>{ticket.title}</h1> : <ContentPlaceholder height="1" />}
+          {ticket ? <p>{ticket.date}</p> : <ContentPlaceholder height="1" />}
+          {ticket ? <p>{ticket.author}</p> : <ContentPlaceholder height="1" />}
+          {ticket ? (
+            <p>{ticket.category}</p>
+          ) : (
+            <ContentPlaceholder height="1" />
+          )}
+          {ticket ? <p>{ticket.content}</p> : <ContentPlaceholder height="4" />}
           <Button
             variant="contained"
             color="primary"
