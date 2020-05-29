@@ -59,7 +59,7 @@ export default function Ticket({ ticket }) {
             disableElevation
             onClick={markResolved}
           >
-            {ticket.resolved === "false" ? "Mark Resolved" : "Unmark Resolved"}
+            {ticket.resolved === "false" ? "Mark Resolved" : "Mark Unresolved"}
           </Button>
         )}
       </CardContent>
