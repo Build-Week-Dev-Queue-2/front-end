@@ -3,10 +3,8 @@ import {
   USER_REGISTER,
   FETCH_ALL_TICKETS,
   CREATE_TICKET,
+  EXPAND_TICKET,
   EDIT_TICKET,
-  CREATE_COMMENT,
-  FETCH_COMMENTS,
-  MARK_RESOLVED,
 } from "../actions/";
 
 const savedUser = JSON.parse(sessionStorage.getItem("user"));
@@ -18,8 +16,7 @@ const initialState = {
     role_id: "",
   },
   tickets: [],
-  ticketToEdit: {},
-  comments: {},
+  expandedTicketId: null,
 };
 
 export const reducer = (state = initialState, action) => {
@@ -44,38 +41,17 @@ export const reducer = (state = initialState, action) => {
         ...state,
         tickets: action.payload,
       };
-    case FETCH_COMMENTS:
-      const comments = action.payload.reduce((obj, comment) => {
-        obj[comment.ticket_id] = obj[comment.ticket_id]
-          ? [...obj[comment.ticket_id], comment]
-          : [comment];
-        return obj;
-      }, {});
-      return {
-        ...state,
-        comments,
-      };
-    case CREATE_COMMENT:
-      return {
-        ...state,
-        comments: {
-          ...state.comments,
-          [action.payload.ticket_id]: state.comments[action.payload.ticket_id] // if comments for this ticket exist
-            ? [...state.comments[action.payload.ticket_id], action.payload] // spread out the comments and add the new comment
-            : [action.payload], // otherwise return a new array with the newly created comment
-        },
-      };
     case CREATE_TICKET:
       return {
         ...state,
         tickets: [...state.tickets, action.payload],
       };
-    case EDIT_TICKET:
+    case EXPAND_TICKET:
       return {
         ...state,
-        ticketToEdit: action.payload,
+        expandedTicketId: action.payload,
       };
-    case MARK_RESOLVED:
+    case EDIT_TICKET:
       return {
         ...state,
         tickets: state.tickets.map((ticket) => {

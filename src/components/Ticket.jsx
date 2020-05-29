@@ -1,32 +1,13 @@
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Card, CardContent, Typography, Button } from "@material-ui/core";
-import { editTicket, createComment, markResolved } from "../actions/";
+import { expandTicket, editTicket } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
 export default function Ticket({ ticket }) {
   const dispatch = useDispatch();
-  const comments = useSelector((state) => state.comments[ticket.ticket_id]);
   const user = useSelector((state) => state.user);
-  const [message, setMessage] = useState("");
   const [isResolved, setIsResolved] = useState(false);
-
-  const submitComment = (evt) => {
-    evt.preventDefault();
-    const comment = {
-      author: user.user_id,
-      message: message,
-      ticket_id: ticket.ticket_id,
-    };
-
-    axiosWithAuth()
-      .post("/api/comments", comment)
-      .then((res) => {
-        console.log(res.data);
-        dispatch(createComment(res.data));
-      })
-      .catch((err) => console.log(err));
-  };
 
   const submitMarkResolved = (evt) => {
     evt.stopPropagation();
@@ -45,12 +26,12 @@ export default function Ticket({ ticket }) {
       .put(`/api/tickets/${ticket.ticket_id}`, resolvedTicket)
       .then((res) => {
         console.log(res.data);
-        dispatch(markResolved(res.data));
+        dispatch(editTicket(res.data));
       })
       .catch((err) => console.log(err.response.data.message));
   };
 
-  const submitTicketToEdit = () => dispatch(editTicket(ticket));
+  const submitTicketToEdit = () => dispatch(expandTicket(ticket.ticket_id));
 
   return (
     <Card>

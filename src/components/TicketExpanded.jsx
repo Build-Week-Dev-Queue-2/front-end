@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -10,10 +10,10 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { createComment, markResolved } from "../actions/";
+import { editTicket } from "../actions";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
-export default function TicketDetails({ ticket }) {
+export default function TicketExpanded() {
   const dispatch = useDispatch();
   const {
     register,
@@ -23,10 +23,33 @@ export default function TicketDetails({ ticket }) {
     errors,
   } = useForm();
   const user = useSelector((state) => state.user);
-  const comments = useSelector((state) => state.comments[ticket.ticket_id]);
+  const ticketId = useSelector((state) => state.expandedTicketId);
   const [isEditing, setIsEditing] = useState(false);
+  const [ticket, setTicket] = useState({});
+  const [comments, setComments] = useState([]);
 
-  const onSubmit = (data) => console.log(data);
+  useEffect(() => {
+    if (ticketId) {
+      axiosWithAuth()
+        .get(`/api/tickets/${ticketId}`)
+        .then((res) => setTicket(res.data))
+        .catch((err) => console.log(err));
+      axiosWithAuth()
+        .get(`/api/tickets/${ticketId}/comments`)
+        .then((res) => setComments(res.data));
+    }
+  }, [ticketId]);
+
+  const onSubmitEdit = (data) => {
+    axiosWithAuth()
+      .put(`/api/tickets/${ticket.ticket_id}`, data)
+      .then((res) => {
+        console.log(editTicket(res.data));
+        dispatch(editTicket(res.data));
+      })
+      .catch((err) => console.log(err.response.data.message));
+  };
+
   const submitComment = (data) => {
     const comment = {
       author: user.user_id,
@@ -37,15 +60,15 @@ export default function TicketDetails({ ticket }) {
     axiosWithAuth()
       .post("/api/comments", comment)
       .then((res) => {
-        dispatch(createComment(res.data));
+        setComments([...comments, res.data]);
       })
       .catch((err) => console.log(err));
   };
 
   return (
     <div>
-      {isEditing ? (
-        <form onSubmit={handleSubmit(onSubmit)}>
+      {ticket && isEditing ? (
+        <form onSubmit={handleSubmit(onSubmitEdit)}>
           <TextField
             id="title"
             name="title"
@@ -62,7 +85,7 @@ export default function TicketDetails({ ticket }) {
             multiline
             rows={4}
             inputRef={register}
-            defaultValue={ticket.title}
+            defaultValue={ticket.content}
           />
           <InputLabel id="category">Category</InputLabel>
           <Controller
