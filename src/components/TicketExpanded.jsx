@@ -23,7 +23,7 @@ export default function TicketExpanded() {
     errors,
   } = useForm();
   const user = useSelector((state) => state.user);
-  const ticketId = useSelector((state) => state.ticketToEdit);
+  const ticketId = useSelector((state) => state.expandedTicketId);
   const [isEditing, setIsEditing] = useState(false);
   const [ticket, setTicket] = useState({});
   const [comments, setComments] = useState([]);
