@@ -13,6 +13,8 @@ import {
 import { editTicket, expandTicket } from "../actions";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 
+import ContentPlaceholder from "./ContentPlaceholder";
+
 export default function TicketExpanded() {
   const dispatch = useDispatch();
   const {
@@ -25,7 +27,7 @@ export default function TicketExpanded() {
   const user = useSelector((state) => state.user);
   const ticketId = useSelector((state) => state.expandedTicketId);
   const [isEditing, setIsEditing] = useState(false);
-  const [ticket, setTicket] = useState({});
+  const [ticket, setTicket] = useState(null);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
@@ -67,7 +69,7 @@ export default function TicketExpanded() {
 
   return (
     <div>
-      {ticket && isEditing ? (
+      {isEditing ? (
         <form onSubmit={handleSubmit(onSubmitEdit)}>
           <TextField
             id="title"
@@ -106,11 +108,15 @@ export default function TicketExpanded() {
         </form>
       ) : (
         <>
-          <h1>{ticket.title}</h1>
-          <p>{ticket.author}</p>
-          <p>{ticket.date}</p>
-          <p>{ticket.content}</p>
-          <p>{ticket.category}</p>
+          {ticket ? <h1>{ticket.title}</h1> : <ContentPlaceholder height="1" />}
+          {ticket ? <p>{ticket.date}</p> : <ContentPlaceholder height="1" />}
+          {ticket ? <p>{ticket.author}</p> : <ContentPlaceholder height="1" />}
+          {ticket ? (
+            <p>{ticket.category}</p>
+          ) : (
+            <ContentPlaceholder height="1" />
+          )}
+          {ticket ? <p>{ticket.content}</p> : <ContentPlaceholder height="4" />}
           <Button
             variant="contained"
             color="primary"
