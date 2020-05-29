@@ -5,6 +5,9 @@ import { fetchComments } from "../actions/";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 import Ticket from "./Ticket";
 
+
+import { StyledTicketWrapper } from '../utils/styles';
+
 export default function TicketList({ tickets }) {
   const dispatch = useDispatch();
 
@@ -16,10 +19,10 @@ export default function TicketList({ tickets }) {
   }, [dispatch]);
 
   return (
-    <>
+    <StyledTicketWrapper>
       {tickets.map((ticket) => {
         return <Ticket ticket={ticket} />;
       })}
-    </>
+    </StyledTicketWrapper>
   );
 }
