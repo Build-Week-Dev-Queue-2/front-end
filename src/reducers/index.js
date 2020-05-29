@@ -60,9 +60,9 @@ export const reducer = (state = initialState, action) => {
         ...state,
         comments: {
           ...state.comments,
-          [action.payload.ticket_id]: state.comments[action.payload.ticket_id]
-            ? [...state.comments[action.payload.ticket_id], action.payload]
-            : [action.payload],
+          [action.payload.ticket_id]: state.comments[action.payload.ticket_id] // if comments for this ticket exist
+            ? [...state.comments[action.payload.ticket_id], action.payload] // spread out the comments and add the new comment
+            : [action.payload], // otherwise return a new array with the newly created comment
         },
       };
     case CREATE_TICKET:
