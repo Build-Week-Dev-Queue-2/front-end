@@ -6,6 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 import { axiosWithAuth } from "../utils/axiosWithAuth";
 import { fetchAllTickets, expandTicket } from "../actions/";
 
+import Logout from "./Logout";
 import Modal from "./Modal";
 import CreateTicketForm from "./Forms/CreateTicketForm";
 import TicketExpanded from "./TicketExpanded";
@@ -72,9 +73,7 @@ export default function Home({ history, match }) {
             Resolved
           </Button>
         </ButtonGroup>
-        <Button variant="contained" color="secondary" disableElevation>
-          Logout
-        </Button>
+        <Logout />
       </header>
       <main>
         <TicketList
